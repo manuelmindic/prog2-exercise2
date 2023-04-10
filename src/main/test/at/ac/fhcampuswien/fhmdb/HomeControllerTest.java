@@ -211,12 +211,12 @@ class HomeControllerTest {
     }
 
     @Test
-    void no_filtering_ui_if_empty_query_or_no_genre_is_set() {
+    void no_filtering_ui_if_empty_query_or_no_genre_or_no_year_or_no_rating() {
         // given
         homeController.initializeState();
 
         // when
-        homeController.applyAllFilters("", null);
+        homeController.applyAllFilters("", null, null,null);
 
         // then
         assertEquals(homeController.allMovies, homeController.observableMovies);
@@ -235,4 +235,21 @@ class HomeControllerTest {
         //then
         assertEquals(2,moviesCount);
     }
+
+
+    @Test
+    void result_of_most_popular_actor_is_tom_hanks(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        String mostPopularActor = homeController.getMostPopularActor(movieList);
+
+        //then
+        assertEquals("tom hanks",mostPopularActor);
+    }
+
+
 }

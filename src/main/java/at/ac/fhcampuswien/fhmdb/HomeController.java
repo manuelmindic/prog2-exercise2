@@ -16,10 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -36,6 +34,10 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton sortBtn;
+    @FXML
+    public JFXComboBox releaseYearComboBox;
+    @FXML
+    public JFXComboBox ratingComboBox;
 
     public List<Movie> allMovies;
 
@@ -64,7 +66,40 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
+
+        releaseYearComboBox.setPromptText("Filter by Release Year");
+        releaseYearComboBox.getItems().addAll(MovieAPI.getReleaseYears());
+
+
+        ratingComboBox.setPromptText("Filter by Rating");
+        Double[] rating = new Double[]{1.00, 2.00, 3.00, 4.00, 5.00, 6.00, 7.00, 8.00, 9.00};
+        ratingComboBox.getItems().addAll(rating);
+
+
+
     }
+
+
+    public List<Movie> filterByYear(List<Movie> movies, Integer releaseYear){
+        return movies.stream()
+
+                .filter(movie -> movie.getReleaseYear() == releaseYear)
+                .toList();
+    }
+
+
+    public List<Movie> filterByRating(List<Movie> movies, Double rating){
+
+        if (rating == null){
+            return movies;
+        }
+
+        return movies.stream()
+                .filter(movie -> movie.getRating() >= rating)
+                .toList();
+    }
+
+
 
     public void sortMovies(){
         if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
@@ -115,7 +150,7 @@ public class HomeController implements Initializable {
                 .toList();
     }
 
-    public void applyAllFilters(String searchQuery, Object genre) {
+    public void applyAllFilters(String searchQuery, Object genre,Integer releaseYear, Double ratings) {
         List<Movie> filteredMovies = allMovies;
 
         if (!searchQuery.isEmpty()) {
@@ -126,6 +161,14 @@ public class HomeController implements Initializable {
             filteredMovies = filterByGenre(filteredMovies, Genre.valueOf(genre.toString()));
         }
 
+        if (releaseYear != null){
+            filteredMovies = filterByYear(filteredMovies,releaseYear);
+        }
+
+        if (ratings != null){
+            filteredMovies = filterByRating(filteredMovies, ratings);
+        }
+
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
@@ -133,8 +176,11 @@ public class HomeController implements Initializable {
     public void searchBtnClicked(ActionEvent actionEvent) {
         String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
+        Integer releaseYear = (Integer) releaseYearComboBox.getSelectionModel().getSelectedItem();
+        Double rating = (Double) ratingComboBox.getSelectionModel().getSelectedItem();
 
-        applyAllFilters(searchQuery, genre);
+        applyAllFilters(searchQuery, genre, releaseYear,rating);
+
         sortMovies(sortedState);
     }
 
@@ -147,4 +193,19 @@ public class HomeController implements Initializable {
                 .filter(movie -> movie.getDirectors().contains(director))
                 .count();
     }
+
+    public String getMostPopularActor(List<Movie> movies){
+        String mostPopularActor = movies.stream()
+                .flatMap(s->s.getMainCast().stream())
+                .collect(Collectors.groupingBy(String::toLowerCase, Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("");
+
+        return mostPopularActor;
+
+    }
+
+
 }

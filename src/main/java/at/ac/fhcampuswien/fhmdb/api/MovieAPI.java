@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import okhttp3.*;
 import com.google.gson.*;
@@ -65,4 +66,19 @@ public class MovieAPI {
     public static List<Movie> getAllMovies(){
         return getAllMovies(null, null, null, null);
     }
+
+    public static List<Integer> getReleaseYears(){
+        List<Movie> allMovies = getAllMovies();
+
+        return allMovies.stream()
+                .map(Movie::getReleaseYear)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+
 }
+
+
+
