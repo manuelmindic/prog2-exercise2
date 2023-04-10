@@ -9,10 +9,44 @@ public class Movie {
     private final String description;
     private final List<Genre> genres;
 
+    private final String id;
+
+    private final int releaseYear;
+
+    private final String imgUrl;
+
+    private final int lengthInMinutes;
+
+    private final List<String> directors = new ArrayList<>();
+
+    private final List<String> writers = new ArrayList<>();
+
+    private final List<String> mainCast = new ArrayList<>();
+
+    private final double rating;
+
+
+
     public Movie(String title, String description, List<Genre> genres) {
         this.title = title;
         this.description = description;
         this.genres = genres;
+        this.releaseYear = 0;
+        this.imgUrl = null;
+        this.lengthInMinutes = 0;
+        this.rating = 0;
+        this.id ="";
+    }
+
+    public Movie(String id, String title, List<Genre> genres, int releaseYear, String description, String imgURL, int lengthInMinutes, double ratingFrom) {
+        this.title = title;
+        this.id = id;
+        this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.description = description;
+        this.imgUrl = imgURL;
+        this.lengthInMinutes = lengthInMinutes;
+        this.rating = ratingFrom;
     }
 
     @Override
@@ -41,6 +75,38 @@ public class Movie {
         return genres;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public int getLengthInMinutes() {
+        return lengthInMinutes;
+    }
+
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public List<String> getWriters() {
+        return writers;
+    }
+
+    public List<String> getMainCast() {
+        return mainCast;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie(
@@ -65,5 +131,10 @@ public class Movie {
                 Arrays.asList(Genre.DRAMA, Genre.ROMANCE, Genre.BIOGRAPHY)));
 
         return movies;
+    }
+
+    @Override
+    public String toString(){
+        return title;
     }
 }
