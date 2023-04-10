@@ -251,5 +251,36 @@ class HomeControllerTest {
         assertEquals("tom hanks",mostPopularActor);
     }
 
+    @Test
+    void result_of_get_longest_Movie_Title_is_46(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        int longestMovieTitle = homeController.getLongestMovieTitle(movieList);
+
+        //then
+        assertEquals(46,longestMovieTitle);
+    }
+
+    @Test
+    void result_of_get_Movies_Between_Years_2012_And_2019_Is_Four(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        List<Movie> getMoviesBetweenYears = homeController.getMoviesBetweenYears(movieList,2012,2019);
+
+        //then
+        assertEquals(4,getMoviesBetweenYears.stream().count());
+
+    }
+
+
+
 
 }
