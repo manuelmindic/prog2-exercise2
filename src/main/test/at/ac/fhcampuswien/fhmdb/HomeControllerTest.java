@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
@@ -221,4 +222,17 @@ class HomeControllerTest {
         assertEquals(homeController.allMovies, homeController.observableMovies);
     }
 
+    @Test
+    void result_of_movies_by_christopher_nolan_should_be_two(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        long moviesCount = homeController.countMoviesFrom(movieList, "Christopher Nolan");
+
+        //then
+        assertEquals(2,moviesCount);
+    }
 }
