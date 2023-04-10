@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortedState;
@@ -210,15 +211,76 @@ class HomeControllerTest {
     }
 
     @Test
-    void no_filtering_ui_if_empty_query_or_no_genre_is_set() {
+    void no_filtering_ui_if_empty_query_or_no_genre_or_no_year_or_no_rating() {
         // given
         homeController.initializeState();
 
         // when
-        homeController.applyAllFilters("", null);
+        homeController.applyAllFilters("", null, null,null);
 
         // then
         assertEquals(homeController.allMovies, homeController.observableMovies);
     }
+
+    @Test
+    void result_of_movies_by_christopher_nolan_should_be_two(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        long moviesCount = homeController.countMoviesFrom(movieList, "Christopher Nolan");
+
+        //then
+        assertEquals(2,moviesCount);
+    }
+
+
+    @Test
+    void result_of_most_popular_actor_is_tom_hanks(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        String mostPopularActor = homeController.getMostPopularActor(movieList);
+
+        //then
+        assertEquals("tom hanks",mostPopularActor);
+    }
+
+    @Test
+    void result_of_get_longest_Movie_Title_is_46(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        int longestMovieTitle = homeController.getLongestMovieTitle(movieList);
+
+        //then
+        assertEquals(46,longestMovieTitle);
+    }
+
+    @Test
+    void result_of_get_Movies_Between_Years_2012_And_2019_Is_Four(){
+        //given
+        HomeController homeController = new HomeController();
+        MovieAPI movieAPI = new MovieAPI();
+        List<Movie> movieList = movieAPI.getAllMovies();
+
+        //when
+        List<Movie> getMoviesBetweenYears = homeController.getMoviesBetweenYears(movieList,2012,2019);
+
+        //then
+        assertEquals(4,getMoviesBetweenYears.stream().count());
+
+    }
+
+
+
 
 }
